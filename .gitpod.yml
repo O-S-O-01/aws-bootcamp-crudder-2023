@@ -1,0 +1,17 @@
+image: gitpod/workspace-full
+
+tasks:
+  - name: install-aws-cli
+    env:
+      AWS_CLI_AUTO_PROMPT: on-partial
+    init: |
+      echo "⬇️ Installing AWS CLI..."
+      cd /workspace
+      curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+      unzip awscliv2.zip
+      sudo ./aws/install
+      echo "✅ AWS CLI installed"
+      cd $THEIA_WORKSPACE_ROOT  # Go back to your project folder
+
+    command: |
+      echo "📦 Workspace ready. Type 'aws --version' to verify AWS CLI is working."
