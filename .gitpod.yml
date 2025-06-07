@@ -1,17 +1,29 @@
 image: gitpod/workspace-full
 
 tasks:
-  - name: install-aws-cli
+  - name: aws-cli-setup
     env:
       AWS_CLI_AUTO_PROMPT: on-partial
     init: |
-      echo "⬇️ Installing AWS CLI..."
+      echo "⬇️ [AWS CLI SETUP]"
       cd /workspace
       curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
       unzip awscliv2.zip
       sudo ./aws/install
       echo "✅ AWS CLI installed"
-      cd $THEIA_WORKSPACE_ROOT  # Go back to your project folder
+      cd $THEIA_WORKSPACE_ROOT
 
+  - name: ssh-key-setup
+    init: |
+      echo "🔐 [SSH KEY SETUP]"
+      mkdir -p ~/.ssh
+      echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+      chmod 600 ~/.ssh/id_ed25519
+      eval "$(ssh-agent -s)"
+      ssh-add ~/.ssh/id_ed25519
+      ssh-keyscan github.com >> ~/.ssh/known_hosts
+      echo "✅ SSH key configured"
+
+  - name: ready-message
     command: |
-      echo "📦 Workspace ready. Type 'aws --version' to verify AWS CLI is working."
+      echo "✅ Workspace is fully configured. Run 'aws --version' or 'git push' to test."
